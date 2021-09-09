@@ -1,4 +1,5 @@
 public class WaitNotifyClass {
+    //notifyAll
     private final Object mon = new Object();
     private volatile char currentLetter = 'A';
 
