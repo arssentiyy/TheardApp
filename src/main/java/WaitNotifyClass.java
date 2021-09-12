@@ -1,18 +1,18 @@
 public class WaitNotifyClass {
-    //notifyAll
     private final Object mon = new Object();
-    private volatile char currentLetter = 'A';
+    private volatile char currentLetterStart = 'A';
 
     public static void main(String[] args) {
         WaitNotifyClass waitNotifyObj = new WaitNotifyClass();
+
         Thread thread1 = new Thread(() -> {
-            waitNotifyObj.printA();
+            waitNotifyObj.printAbC('A', 'B');
         });
         Thread thread2 = new Thread(() -> {
-            waitNotifyObj.printB();
+            waitNotifyObj.printAbC('B','C');
         });
         Thread thread3 = new Thread(() -> {
-            waitNotifyObj.printC();
+            waitNotifyObj.printAbC('C','A');
         });
 
         thread1.start();
@@ -20,50 +20,16 @@ public class WaitNotifyClass {
         thread3.start();
     }
 
-    public void printA() {
+    public void printAbC(char currentLetter, char nextLetter) {
         synchronized (mon) {
             try {
                 for (int i = 0; i < 5; i++) {
-                    while (currentLetter != 'A') {
+                    while (currentLetterStart != currentLetter) {
                         mon.wait();
                     }
-                    System.out.print("A");
-                    currentLetter = 'B';
+                    System.out.print(currentLetter);
+                    currentLetterStart = nextLetter;
                     mon.notifyAll();
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void printB() {
-        synchronized (mon) {
-            try {
-                for (int i = 0; i < 5; i++) {
-                    while (currentLetter != 'B') {
-                        mon.wait();
-                    }
-                    System.out.print("B");
-                    currentLetter = 'C';
-                    mon.notifyAll();
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void printC() {
-        synchronized (mon) {
-            try {
-                for (int i = 0; i < 5; i++) {
-                    while (currentLetter != 'C') {
-                        mon.wait();
-                    }
-                    System.out.print("C");
-                    currentLetter = 'A';
-                    mon.notifyAll(); //
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -71,4 +37,3 @@ public class WaitNotifyClass {
         }
     }
 }
-
